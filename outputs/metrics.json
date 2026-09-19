@@ -1,0 +1,54 @@
+{
+  "validation": {
+    "accounts": 3672,
+    "churn_events": 572,
+    "observed_churn_rate": 0.15577342047930284,
+    "c_index": 0.6342547807358293,
+    "horizon_months": 12
+  },
+  "test": {
+    "accounts": 3100,
+    "churn_events": 472,
+    "observed_churn_rate": 0.15225806451612903,
+    "c_index": 0.6056557810121177,
+    "horizon_months": 12
+  },
+  "training": {
+    "accounts": 4521,
+    "events": 849,
+    "max_followup_months": 24
+  },
+  "calibration_alpha": 0.8450186954243178,
+  "model_version": "cox-v1-44f6d95411",
+  "config": {
+    "seed": 42,
+    "n_customers": 5000,
+    "start_date": "2021-01-31",
+    "months": 60,
+    "train_landmarks": [
+      "2021-12-31",
+      "2022-12-31"
+    ],
+    "train_observation_end": "2023-12-31",
+    "validation_date": "2023-12-31",
+    "validation_end": "2024-12-31",
+    "test_date": "2024-12-31",
+    "test_end": "2025-12-31",
+    "clv_horizon_months": 24,
+    "evaluation_horizon_months": 12,
+    "cox_penalizer": 0.1,
+    "baseline": {
+      "annual_renewal_rate": 0.9,
+      "monthly_background_churn": 0.001,
+      "annual_expansion_rate": 0.04,
+      "contribution_margin": 0.72,
+      "annual_discount_rate": 0.1
+    }
+  },
+  "table_rows": {
+    "customers": 5000,
+    "arrays": 18241,
+    "monthly_account_metrics": 214616,
+    "events": 27998
+  }
+}

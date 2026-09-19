@@ -1,0 +1,29 @@
+[project]
+name = "enterprise-clv-risk-platform"
+version = "1.0.0"
+description = "Reproducible enterprise customer survival and discounted contribution analytics"
+requires-python = ">=3.11"
+dynamic = ["dependencies"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[project.optional-dependencies]
+snowflake = ["snowflake-connector-python[pandas]>=3.12,<5"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

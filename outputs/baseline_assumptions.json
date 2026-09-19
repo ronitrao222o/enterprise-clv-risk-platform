@@ -1,0 +1,7 @@
+{
+  "annual_renewal_rate": 0.9,
+  "monthly_background_churn": 0.001,
+  "annual_expansion_rate": 0.04,
+  "contribution_margin": 0.72,
+  "annual_discount_rate": 0.1
+}

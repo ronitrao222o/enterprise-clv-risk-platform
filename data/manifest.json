@@ -1,0 +1,11 @@
+{
+  "seed": 42,
+  "synthetic": true,
+  "months": 60,
+  "tables": {
+    "customers": 5000,
+    "arrays": 18241,
+    "monthly_account_metrics": 214616,
+    "events": 27998
+  }
+}
