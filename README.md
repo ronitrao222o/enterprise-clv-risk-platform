@@ -35,6 +35,22 @@ then rerun training and scoring. Regenerate without that flag to restore 5,000 a
 `requirements.txt` specifies supported version ranges; `requirements-lock.txt`
 records the exact environment used for the delivered run.
 
+### Make shortcuts
+
+On macOS or Linux, the included `Makefile` provides shorter commands for the common
+workflow:
+
+```bash
+make install      # create .venv and install dependencies
+make pipeline     # generate data, train, and score into DuckDB
+make check        # run tests, lint, and dependency checks
+make dashboard    # launch the Streamlit app
+```
+
+Individual stages are also available as `make generate`, `make train`, and
+`make score`. The explicit Python commands above remain the portable option for
+Windows and environments without `make`.
+
 The dashboard gives setup instructions if artifacts are absent. Retraining changes
 the model version; rerun scoring before opening the dashboard. Source fingerprints
 prevent scoring a regenerated dataset with an older model. Only load the trusted
@@ -338,6 +354,7 @@ write code is implemented but was not cloud-tested without credentials.
 
 ```text
 config.json                  Reproducible experiment and financial assumptions
+Makefile                     Shortcuts for setup, pipeline, checks, and dashboard
 src/
   generate_data.py            Longitudinal synthetic source tables
   data_quality.py             Key, exposure, and business-value checks
