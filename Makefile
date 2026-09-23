@@ -2,6 +2,8 @@ PYTHON ?= python3
 VENV := .venv
 VENV_PYTHON := $(VENV)/bin/python
 VENV_STREAMLIT := $(VENV)/bin/streamlit
+BACKEND ?= duckdb
+PORT ?= 8501
 
 .PHONY: setup install generate train score pipeline test lint check dashboard
 
@@ -20,7 +22,7 @@ train:
 	$(VENV_PYTHON) -m src.train
 
 score:
-	$(VENV_PYTHON) -m src.score --backend duckdb
+	$(VENV_PYTHON) -m src.score --backend $(BACKEND)
 
 pipeline: generate train score
 
@@ -34,4 +36,4 @@ check: test lint
 	$(VENV_PYTHON) -m pip check
 
 dashboard:
-	$(VENV_STREAMLIT) run dashboard/app.py
+	$(VENV_STREAMLIT) run dashboard/app.py --server.port $(PORT)

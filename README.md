@@ -51,6 +51,9 @@ Individual stages are also available as `make generate`, `make train`, and
 `make score`. The explicit Python commands above remain the portable option for
 Windows and environments without `make`.
 
+Use `make dashboard PORT=8502` if port 8501 is busy. To score through the configured
+Snowflake connection, run `make score BACKEND=snowflake` after setting `.env`.
+
 The dashboard gives setup instructions if artifacts are absent. Retraining changes
 the model version; rerun scoring before opening the dashboard. Source fingerprints
 prevent scoring a regenerated dataset with an older model. Only load the trusted
