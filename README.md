@@ -11,6 +11,9 @@ is a different outcome.
 All data is **synthetic**, generated locally with seed 42. This project contains no
 confidential company data, customer records, or claimed production deployments.
 
+For a concise presentation of the approach and measured results, see the
+[project report](PROJECT_REPORT.md).
+
 ## Run locally
 
 Python **3.11+**; tested end-to-end on Python 3.13. No cloud account, notebook, API key,
