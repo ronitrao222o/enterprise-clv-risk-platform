@@ -30,6 +30,21 @@ def test_source_relationships_and_exposures(tables):
         validate_sources(corrupted, "2025-12-31")
 
 
+def test_event_schema_rejects_unknown_and_misassigned_array_ids(tables):
+    unknown = {k: v.copy() for k, v in tables.items()}
+    unknown["events"].loc[0, "event_type"] = "contract_pause"
+    with pytest.raises(ValueError, match="Unknown event types"):
+        validate_sources(unknown, "2025-12-31")
+
+    misassigned = {k: v.copy() for k, v in tables.items()}
+    hardware_row = misassigned["events"].index[
+        misassigned["events"].event_type == "array_replacement"
+    ][0]
+    misassigned["events"].loc[hardware_row, "array_id"] = None
+    with pytest.raises(ValueError, match="hardware lifecycle events"):
+        validate_sources(misassigned, "2025-12-31")
+
+
 def test_future_rows_cannot_change_features(tables):
     cutoff = pd.Timestamp("2023-12-31")
     expected = make_features(tables, cutoff)

@@ -352,7 +352,8 @@ Writes replace **current snapshot tables**; they do not append scoring history.
 Use a dedicated project schema. Local table replacement is atomic per table;
 the entire multi-table publish is not a single transaction. The adapter infers
 warehouse types from DataFrames, with the SQL scripts as the documented contract.
-Python enforces source relationships, score completeness, uniqueness, finite values,
+Python enforces source relationships, known event types, array-ID placement,
+score completeness, uniqueness, finite values,
 monotonic risks, and financial bounds before publishing. Snowflake connection and
 write code is implemented but was not cloud-tested without credentials.
 

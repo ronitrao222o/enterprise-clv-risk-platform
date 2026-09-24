@@ -4,9 +4,17 @@ from __future__ import annotations
 
 import pandas as pd
 
+from src.competing_risks import EVENT_CODES
+
 
 def validate_sources(tables: dict[str, pd.DataFrame], observation_end: str) -> None:
     c, a, m, e = (tables[k] for k in ("customers", "arrays", "monthly_account_metrics", "events"))
+    unknown_events = set(e.event_type.dropna()) - {*EVENT_CODES, "renewal", "expansion"}
+    if e.event_type.isna().any() or unknown_events:
+        raise ValueError(f"Unknown event types: {sorted(unknown_events)}")
+    hardware_event = e.event_type.isin(["array_replacement", "end_of_service"])
+    if (hardware_event != e.array_id.notna()).any():
+        raise ValueError("Only hardware lifecycle events may reference an array ID.")
     if (
         c.customer_id.duplicated().any()
         or a.array_id.duplicated().any()
