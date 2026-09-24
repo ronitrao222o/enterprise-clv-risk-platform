@@ -346,6 +346,21 @@ elif page == "Customer Detail":
         st.caption(
             f"Restricted expected active months: {row.expected_remaining_lifetime:.1f} of 24. This is not an estimate of total remaining lifetime. 24m probabilities have only 12m out-of-time validation."
         )
+        survival_export = pd.DataFrame(
+            {
+                "customer_id": chosen,
+                "scoring_date": row.scoring_date.date().isoformat(),
+                "month": np.arange(25),
+                "survival_probability": np.r_[1, curve],
+                "churn_risk": 1 - np.r_[1, curve],
+            }
+        )
+        st.download_button(
+            "Download survival curve",
+            survival_export.to_csv(index=False),
+            file_name=f"{chosen}_survival_curve.csv",
+            mime="text/csv",
+        )
     with right:
         terms = data["risk_explanations"].loc[lambda x: x.customer_id == chosen]
         selected = (

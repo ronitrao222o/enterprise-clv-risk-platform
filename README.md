@@ -314,7 +314,7 @@ provides the survival prediction API.
 - **Risk Explorer:** risk distribution, revenue concentration, segment survival curves,
   and separately labeled asset competing-risk curves.
 - **Customer Detail:** account context, 3/6/12/24-month risk, survival curve, CLV,
-  exact upward/downward model contributions, and feature inspection.
+  exact upward/downward model contributions, feature inspection, and survival-curve CSV export.
 - **Model Validation:** fixed test cohort, baseline/raw/calibrated financial errors,
   calibration buckets with uncertainty, C-index, Brier scores, subgroup results, KM,
   coefficient table, and downloadable results.
