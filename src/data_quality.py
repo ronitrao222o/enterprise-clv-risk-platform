@@ -30,6 +30,11 @@ def validate_sources(tables: dict[str, pd.DataFrame], observation_end: str) -> N
     owners = hardware.array_id.map(a.set_index("array_id").customer_id)
     if not (owners == hardware.customer_id).all():
         raise ValueError("Array event owner mismatch.")
+    if hardware.array_id.duplicated().any():
+        raise ValueError("An array can have only one terminal lifecycle event.")
+    install_dates = hardware.array_id.map(a.set_index("array_id").install_date)
+    if (hardware.event_date < install_dates).any():
+        raise ValueError("Array lifecycle event predates installation.")
     churn = e.loc[e.event_type == "customer_churn"]
     if churn.customer_id.duplicated().any():
         raise ValueError("Multiple terminal churns per customer.")

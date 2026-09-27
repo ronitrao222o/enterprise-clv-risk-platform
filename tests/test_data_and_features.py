@@ -45,6 +45,22 @@ def test_event_schema_rejects_unknown_and_misassigned_array_ids(tables):
         validate_sources(misassigned, "2025-12-31")
 
 
+def test_array_lifecycle_requires_valid_event_order(tables):
+    event = tables["events"].loc[lambda x: x.array_id.notna()].iloc[0]
+    repeated = {k: v.copy() for k, v in tables.items()}
+    repeated["events"] = pd.concat(
+        [repeated["events"], event.to_frame().T], ignore_index=True
+    )
+    with pytest.raises(ValueError, match="only one terminal lifecycle event"):
+        validate_sources(repeated, "2025-12-31")
+
+    early = {k: v.copy() for k, v in tables.items()}
+    install_date = early["arrays"].set_index("array_id").loc[event.array_id, "install_date"]
+    early["events"].loc[event.name, "event_date"] = install_date - pd.offsets.MonthEnd(1)
+    with pytest.raises(ValueError, match="predates installation"):
+        validate_sources(early, "2025-12-31")
+
+
 def test_future_rows_cannot_change_features(tables):
     cutoff = pd.Timestamp("2023-12-31")
     expected = make_features(tables, cutoff)
