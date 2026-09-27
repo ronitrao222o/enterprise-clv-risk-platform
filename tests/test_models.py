@@ -102,3 +102,11 @@ def test_end_to_end_models_scoring_and_explanation(tables):
     invalid.loc[0, "churn_risk_24m"] = -0.1
     with pytest.raises(ValueError):
         validate_scores(invalid)
+    invalid_date = scores.copy()
+    invalid_date.loc[0, "scoring_date"] = pd.Timestamp("2024-12-15")
+    with pytest.raises(ValueError, match="month ends"):
+        validate_scores(invalid_date)
+    invalid_id = scores.copy()
+    invalid_id.loc[0, "customer_id"] = "  "
+    with pytest.raises(ValueError, match="nonempty"):
+        validate_scores(invalid_id)

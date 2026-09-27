@@ -40,6 +40,11 @@ def validate_scores(scores: pd.DataFrame, horizon: int = 24) -> None:
         raise ValueError("Invalid or incomplete scoring schema.")
     if scores.duplicated(["customer_id", "scoring_date"]).any():
         raise ValueError("Duplicate customer/date scores.")
+    if scores.customer_id.astype(str).str.strip().eq("").any():
+        raise ValueError("Customer IDs must be nonempty.")
+    scoring_dates = pd.to_datetime(scores.scoring_date, errors="coerce")
+    if scoring_dates.isna().any() or not scoring_dates.dt.is_month_end.all():
+        raise ValueError("Scoring dates must be valid month ends.")
     probabilities = scores[[f"churn_risk_{t}m" for t in (3, 6, 12, 24)]].to_numpy()
     if (
         not np.isfinite(probabilities).all()

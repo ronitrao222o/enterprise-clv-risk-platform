@@ -354,7 +354,8 @@ the entire multi-table publish is not a single transaction. The adapter infers
 warehouse types from DataFrames, with the SQL scripts as the documented contract.
 Python enforces source relationships, known event types, array-ID placement,
 one terminal event per array, event dates after installation, score completeness,
-uniqueness, finite values, monotonic risks, and financial bounds before publishing.
+nonempty account IDs, month-end scoring dates, uniqueness, finite values,
+monotonic risks, and financial bounds before publishing.
 Snowflake connection and write code is implemented but was not cloud-tested without credentials.
 
 ## Repository map
