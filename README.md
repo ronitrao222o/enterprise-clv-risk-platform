@@ -310,7 +310,8 @@ provides the survival prediction API.
 ## Dashboard
 
 - **Portfolio Overview:** active accounts, ARR, 24-month CLV, ARR exposure proxy,
-  adjustable high-risk threshold, segment comparison, prioritized accounts, CSV export.
+  adjustable high-risk threshold, segment comparison, prioritized accounts with their
+  risk-weighted ARR, and CSV export.
 - **Risk Explorer:** risk distribution, revenue concentration, segment survival curves,
   and separately labeled asset competing-risk curves.
 - **Customer Detail:** account context, 3/6/12/24-month risk, survival curve, CLV,

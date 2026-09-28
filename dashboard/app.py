@@ -131,7 +131,7 @@ st.sidebar.markdown("**Portfolio filters**")
 segment = st.sidebar.multiselect("Customer segment", sorted(all_accounts.company_size.unique()))
 product = st.sidebar.multiselect("Product family", sorted(all_accounts.product_family.unique()))
 region = st.sidebar.multiselect("Region", sorted(all_accounts.region.unique()))
-threshold = st.sidebar.slider("High-risk threshold · 12m", 0.05, 0.6, 0.20, 0.05, format="%.2f")
+threshold = st.sidebar.slider("High-risk threshold · 12m", 0.0, 1.0, 0.20, 0.05, format="%.2f")
 accounts = all_accounts.copy()
 for col, values in [("company_size", segment), ("product_family", product), ("region", region)]:
     if values:
@@ -228,6 +228,7 @@ if page == "Portfolio Overview":
                 "product_family",
                 "ARR",
                 "churn_risk_12m",
+                "revenue_at_risk",
                 "predicted_clv",
                 "top_risk_driver",
             ]
@@ -239,6 +240,7 @@ if page == "Portfolio Overview":
             "churn_risk_12m": st.column_config.ProgressColumn(
                 "12m churn risk", min_value=0, max_value=1, format="percent"
             ),
+            "revenue_at_risk": st.column_config.NumberColumn("Risk-weighted ARR", format="$%,.0f"),
             "predicted_clv": st.column_config.NumberColumn("24m CLV", format="$%,.0f"),
         },
     )
