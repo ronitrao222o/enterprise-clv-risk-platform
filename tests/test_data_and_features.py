@@ -61,6 +61,33 @@ def test_array_lifecycle_requires_valid_event_order(tables):
         validate_sources(early, "2025-12-31")
 
 
+def test_source_events_and_installations_follow_customer_acquisition(tables):
+    renewed_ids = tables["events"].loc[
+        lambda x: x.event_type == "renewal", "customer_id"
+    ]
+    customer = tables["customers"].loc[
+        lambda x: (x.account_start_date > "2021-01-31") & x.customer_id.isin(renewed_ids)
+    ].iloc[0]
+    earlier = customer.account_start_date - pd.offsets.MonthEnd(1)
+
+    early_event = {k: v.copy() for k, v in tables.items()}
+    event_index = early_event["events"].index[
+        (early_event["events"].customer_id == customer.customer_id)
+        & (early_event["events"].event_type == "renewal")
+    ][0]
+    early_event["events"].loc[event_index, "event_date"] = earlier
+    with pytest.raises(ValueError, match="event predates customer acquisition"):
+        validate_sources(early_event, "2025-12-31")
+
+    early_array = {k: v.copy() for k, v in tables.items()}
+    array_index = early_array["arrays"].index[
+        early_array["arrays"].customer_id == customer.customer_id
+    ][0]
+    early_array["arrays"].loc[array_index, "install_date"] = earlier
+    with pytest.raises(ValueError, match="installation predates customer acquisition"):
+        validate_sources(early_array, "2025-12-31")
+
+
 def test_future_rows_cannot_change_features(tables):
     cutoff = pd.Timestamp("2023-12-31")
     expected = make_features(tables, cutoff)

@@ -24,6 +24,9 @@ def validate_sources(tables: dict[str, pd.DataFrame], observation_end: str) -> N
     for frame in (a, m, e):
         if not frame.customer_id.isin(c.customer_id).all():
             raise ValueError("Customer foreign-key violation.")
+    account_starts = c.set_index("customer_id").account_start_date
+    if (a.install_date < a.customer_id.map(account_starts)).any():
+        raise ValueError("Array installation predates customer acquisition.")
     hardware = e.loc[e.array_id.notna()]
     if not hardware.array_id.isin(a.array_id).all():
         raise ValueError("Array foreign-key violation.")
@@ -35,6 +38,8 @@ def validate_sources(tables: dict[str, pd.DataFrame], observation_end: str) -> N
     install_dates = hardware.array_id.map(a.set_index("array_id").install_date)
     if (hardware.event_date < install_dates).any():
         raise ValueError("Array lifecycle event predates installation.")
+    if (e.event_date < e.customer_id.map(account_starts)).any():
+        raise ValueError("Account event predates customer acquisition.")
     churn = e.loc[e.event_type == "customer_churn"]
     if churn.customer_id.duplicated().any():
         raise ValueError("Multiple terminal churns per customer.")
