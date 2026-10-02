@@ -2,7 +2,7 @@
 
 ## Project report
 
-**Updated:** 28 September 2026
+**Updated:** 3 October 2026
 
 **Repository:** [ronitrao222o/enterprise-clv-risk-platform](https://github.com/ronitrao222o/enterprise-clv-risk-platform)  
 **Evidence:** The seeded local run saved in `outputs/metrics.json`, `outputs/test_financial.csv`, `outputs/test_brier.csv`, and `outputs/test_calibration.csv`.  
@@ -81,7 +81,7 @@ The Brier calculation explicitly rejects an evaluation group censored before the
 
 ## Validation and engineering quality
 
-The local end-to-end run regenerated the data, trained and calibrated the model, scored **2,628** accounts active at 31 December 2025, and published tables to DuckDB. The current score version is `cox-v1-a2b264334b`. All **31 pytest tests** pass; Ruff and dependency checks pass. Tests cover source keys and exposure, event-schema and lifecycle validation, reproducibility, future-data leakage, CLV arithmetic, event classification, calibration, survival scoring, explanation additivity, score schema, warehouse queries, and dashboard page rendering. The GitHub workflow repeats generation, training, scoring, lint, and tests on Python 3.11.
+The local end-to-end run regenerated the data, trained and calibrated the model, scored **2,628** accounts active at 31 December 2025, and published tables to DuckDB. The current score version is `cox-v1-a2b264334b`. All **32 pytest tests** pass; Ruff and dependency checks pass. Tests cover source keys and exposure, event-schema and lifecycle validation, reproducibility, future-data leakage, CLV arithmetic, event classification, calibration, survival scoring, explanation additivity, score schema, warehouse queries, and dashboard page rendering. The GitHub workflow repeats generation, training, scoring, lint, and tests on Python 3.11.
 
 The run is reproducible from `config.json`; model and source fingerprints prevent scoring regenerated data with an older model bundle. Generated datasets, local database files, and fitted model binaries are intentionally excluded from Git, while the README and small measured summaries remain in the repository.
 

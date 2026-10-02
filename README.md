@@ -54,6 +54,10 @@ Individual stages are also available as `make generate`, `make train`, and
 `make score`. The explicit Python commands above remain the portable option for
 Windows and environments without `make`.
 
+For a faster development run, use `make generate CUSTOMERS=500`, then `make train`
+and `make score`. Run `make pipeline` later to restore the default 5,000-customer
+dataset and its matching model artifacts.
+
 Use `make dashboard PORT=8502` if port 8501 is busy. To score through the configured
 Snowflake connection, run `make score BACKEND=snowflake` after setting `.env`.
 

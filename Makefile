@@ -4,6 +4,7 @@ VENV_PYTHON := $(VENV)/bin/python
 VENV_STREAMLIT := $(VENV)/bin/streamlit
 BACKEND ?= duckdb
 PORT ?= 8501
+CUSTOMERS ?=
 
 .PHONY: setup install generate train score pipeline test lint check dashboard
 
@@ -16,7 +17,7 @@ install: $(VENV_PYTHON)
 	$(VENV_PYTHON) -m pip install -r requirements.txt
 
 generate:
-	$(VENV_PYTHON) -m src.generate_data
+	$(VENV_PYTHON) -m src.generate_data $(if $(CUSTOMERS),--customers $(CUSTOMERS))
 
 train:
 	$(VENV_PYTHON) -m src.train
