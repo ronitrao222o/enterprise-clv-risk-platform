@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
 
 from src.competing_risks import EVENT_CODES
@@ -63,5 +64,19 @@ def validate_sources(tables: dict[str, pd.DataFrame], observation_end: str) -> N
         | (joined.month >= churn_dates)
     ).any():
         raise ValueError("Metrics outside active exposure.")
-    if (m.ARR < 0).any() or not m.storage_utilization.between(0, 1).all():
+    measurements = m[
+        [
+            "ARR",
+            "expansion_amount",
+            "support_tickets",
+            "critical_incidents",
+            "storage_utilization",
+            "data_growth",
+        ]
+    ].apply(pd.to_numeric, errors="coerce")
+    if not np.isfinite(measurements.to_numpy()).all():
+        raise ValueError("Monthly business measurements must be finite numbers.")
+    if (
+        measurements[["ARR", "expansion_amount", "support_tickets", "critical_incidents"]] < 0
+    ).any().any() or not measurements.storage_utilization.between(0, 1).all():
         raise ValueError("Invalid business measurements.")

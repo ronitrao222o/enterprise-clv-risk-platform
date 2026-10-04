@@ -30,6 +30,21 @@ def test_source_relationships_and_exposures(tables):
         validate_sources(corrupted, "2025-12-31")
 
 
+@pytest.mark.parametrize(
+    ("column", "bad_value", "message"),
+    [
+        ("ARR", np.nan, "finite numbers"),
+        ("support_tickets", -1, "Invalid business measurements"),
+        ("expansion_amount", -1, "Invalid business measurements"),
+    ],
+)
+def test_rejects_invalid_monthly_business_measurements(tables, column, bad_value, message):
+    corrupted = {k: v.copy() for k, v in tables.items()}
+    corrupted["monthly_account_metrics"].loc[0, column] = bad_value
+    with pytest.raises(ValueError, match=message):
+        validate_sources(corrupted, "2025-12-31")
+
+
 def test_event_schema_rejects_unknown_and_misassigned_array_ids(tables):
     unknown = {k: v.copy() for k, v in tables.items()}
     unknown["events"].loc[0, "event_type"] = "contract_pause"
