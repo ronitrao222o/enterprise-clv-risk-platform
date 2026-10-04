@@ -5,6 +5,7 @@ VENV_STREAMLIT := $(VENV)/bin/streamlit
 BACKEND ?= duckdb
 PORT ?= 8501
 CUSTOMERS ?=
+SCORE_DATE ?=
 
 .PHONY: setup install generate train score pipeline test lint check dashboard
 
@@ -23,7 +24,7 @@ train:
 	$(VENV_PYTHON) -m src.train
 
 score:
-	$(VENV_PYTHON) -m src.score --backend $(BACKEND)
+	$(VENV_PYTHON) -m src.score --backend $(BACKEND) $(if $(SCORE_DATE),--date $(SCORE_DATE))
 
 pipeline: generate train score
 

@@ -60,6 +60,9 @@ dataset and its matching model artifacts.
 
 Use `make dashboard PORT=8502` if port 8501 is busy. To score through the configured
 Snowflake connection, run `make score BACKEND=snowflake` after setting `.env`.
+To inspect a historical month-end snapshot, run `make score SCORE_DATE=2025-06-30`.
+Scoring replaces the current dashboard and warehouse snapshot; run `make score`
+again to restore the latest observed month.
 
 The dashboard gives setup instructions if artifacts are absent. Retraining changes
 the model version; rerun scoring before opening the dashboard. Source fingerprints
