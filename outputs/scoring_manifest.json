@@ -2,5 +2,5 @@
   "backend": "duckdb",
   "scoring_date": "2025-12-31",
   "accounts": 2628,
-  "model_version": "cox-v1-a2b264334b"
+  "model_version": "cox-v1-0e1f1057d6"
 }

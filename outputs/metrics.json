@@ -19,7 +19,7 @@
     "max_followup_months": 24
   },
   "calibration_alpha": 0.8450186954243178,
-  "model_version": "cox-v1-a2b264334b",
+  "model_version": "cox-v1-0e1f1057d6",
   "config": {
     "seed": 42,
     "n_customers": 5000,

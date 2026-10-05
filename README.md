@@ -28,7 +28,7 @@ python -m src.generate_data
 python -m src.train
 python -m src.score --backend duckdb
 pytest -q
-streamlit run dashboard/app.py
+streamlit run dashboard/app.py --server.address 127.0.0.1
 ```
 
 Open [localhost:8501](http://localhost:8501). Run commands from the repository root.
@@ -58,8 +58,9 @@ For a faster development run, use `make generate CUSTOMERS=500`, then `make trai
 and `make score`. Run `make pipeline` later to restore the default 5,000-customer
 dataset and its matching model artifacts.
 
-Use `make dashboard PORT=8502` if port 8501 is busy. To score through the configured
-Snowflake connection, run `make score BACKEND=snowflake` after setting `.env`.
+The dashboard binds to this computer only. If port 8501 is busy, use
+`make dashboard PORT=8502`. To score through the configured Snowflake connection,
+run `make score BACKEND=snowflake` after setting `.env`.
 To inspect a historical month-end snapshot, run `make score SCORE_DATE=2025-06-30`.
 Scoring replaces the current dashboard and warehouse snapshot; run `make score`
 again to restore the latest observed month.

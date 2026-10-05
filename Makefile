@@ -38,4 +38,4 @@ check: test lint
 	$(VENV_PYTHON) -m pip check
 
 dashboard:
-	$(VENV_STREAMLIT) run dashboard/app.py --server.port $(PORT)
+	$(VENV_STREAMLIT) run dashboard/app.py --server.address 127.0.0.1 --server.port $(PORT)
