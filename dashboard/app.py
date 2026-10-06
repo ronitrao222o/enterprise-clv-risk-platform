@@ -114,9 +114,15 @@ if not all(path.exists() for path in required):
 
 data = load_artifacts(tuple(path.stat().st_mtime_ns for path in required))
 all_accounts = data["dashboard_accounts"]
-if data["manifest"]["model_version"] != data["metrics"]["model_version"]:
+manifest = data["manifest"]
+if (
+    manifest["model_version"] != data["metrics"]["model_version"]
+    or len(all_accounts) != manifest["accounts"]
+    or not all_accounts.model_version.eq(manifest["model_version"]).all()
+    or not all_accounts.scoring_date.eq(pd.Timestamp(manifest["scoring_date"])).all()
+):
     st.error(
-        "Scores and validation artifacts refer to different models. Run python -m src.score again."
+        "Dashboard accounts do not match the scoring run. Run python -m src.score again."
     )
     st.stop()
 st.sidebar.markdown("## ◈ Enterprise CLV")

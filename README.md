@@ -69,6 +69,8 @@ The dashboard gives setup instructions if artifacts are absent. Retraining chang
 the model version; rerun scoring before opening the dashboard. Source fingerprints
 prevent scoring a regenerated dataset with an older model. Only load the trusted
 local `models/survival_bundle.joblib` artifact; pickle formats are executable.
+The dashboard also checks the score version, account count, and scoring date against
+its manifest before displaying a portfolio snapshot.
 
 ## Measured results
 
