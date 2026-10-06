@@ -28,6 +28,11 @@ def validate_sources(tables: dict[str, pd.DataFrame], observation_end: str) -> N
     account_starts = c.set_index("customer_id").account_start_date
     if (a.install_date < a.customer_id.map(account_starts)).any():
         raise ValueError("Array installation predates customer acquisition.")
+    capacity = pd.to_numeric(a.capacity_tb, errors="coerce")
+    if not np.isfinite(capacity.to_numpy()).all() or (capacity <= 0).any():
+        raise ValueError("Array capacity must be a positive finite number.")
+    if a.end_of_service_date.isna().any() or (a.end_of_service_date <= a.install_date).any():
+        raise ValueError("Array end-of-service must follow installation.")
     hardware = e.loc[e.array_id.notna()]
     if not hardware.array_id.isin(a.array_id).all():
         raise ValueError("Array foreign-key violation.")

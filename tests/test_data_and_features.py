@@ -103,6 +103,24 @@ def test_source_events_and_installations_follow_customer_acquisition(tables):
         validate_sources(early_array, "2025-12-31")
 
 
+@pytest.mark.parametrize("capacity", [0, np.nan])
+def test_array_capacity_is_positive_and_finite(tables, capacity):
+    bad_capacity = {k: v.copy() for k, v in tables.items()}
+    bad_capacity["arrays"].loc[0, "capacity_tb"] = capacity
+    with pytest.raises(ValueError, match="positive finite"):
+        validate_sources(bad_capacity, "2025-12-31")
+
+
+@pytest.mark.parametrize("service_date", ["same_day", pd.NaT])
+def test_array_service_date_follows_installation(tables, service_date):
+    bad_service_date = {k: v.copy() for k, v in tables.items()}
+    if service_date == "same_day":
+        service_date = bad_service_date["arrays"].loc[0, "install_date"]
+    bad_service_date["arrays"].loc[0, "end_of_service_date"] = service_date
+    with pytest.raises(ValueError, match="end-of-service must follow"):
+        validate_sources(bad_service_date, "2025-12-31")
+
+
 def test_future_rows_cannot_change_features(tables):
     cutoff = pd.Timestamp("2023-12-31")
     expected = make_features(tables, cutoff)
