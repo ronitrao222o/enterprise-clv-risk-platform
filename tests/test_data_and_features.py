@@ -31,6 +31,23 @@ def test_source_relationships_and_exposures(tables):
 
 
 @pytest.mark.parametrize(
+    ("table_name", "column"),
+    [
+        ("customers", "account_start_date"),
+        ("arrays", "end_of_service_date"),
+        ("monthly_account_metrics", "month"),
+        ("events", "event_date"),
+    ],
+)
+def test_rejects_off_cycle_source_dates(tables, table_name, column):
+    corrupted = {k: v.copy() for k, v in tables.items()}
+    original = corrupted[table_name].loc[0, column]
+    corrupted[table_name].loc[0, column] = pd.Timestamp(original) - pd.offsets.Day(1)
+    with pytest.raises(ValueError, match="valid month-end dates"):
+        validate_sources(corrupted, "2025-12-31")
+
+
+@pytest.mark.parametrize(
     ("column", "bad_value", "message"),
     [
         ("ARR", np.nan, "finite numbers"),

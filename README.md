@@ -155,6 +155,8 @@ because it was known at installation.
 A persistent latent distress process affects utilization, support tickets, critical
 incidents, expansion propensity, and monthly churn hazard. Annual renewal, approaching
 initial hardware EOS, and a long period without expansion increase simulated risk.
+Source validation requires month-end dates throughout the customer, array, monthly
+metric, and event tables so off-cycle records cannot silently enter a snapshot.
 Larger strategic accounts have lower underlying attrition. Latent distress and the
 random hazard draws are **not exported as model features**. Customer dimensions are
 immutable in this simulation. Expansion increases recurring ARR; hardware expansion

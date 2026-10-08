@@ -33,6 +33,17 @@ def validate_sources(tables: dict[str, pd.DataFrame], observation_end: str) -> N
         raise ValueError("Array capacity must be a positive finite number.")
     if a.end_of_service_date.isna().any() or (a.end_of_service_date <= a.install_date).any():
         raise ValueError("Array end-of-service must follow installation.")
+    date_columns = {
+        "customers": ("account_start_date",),
+        "arrays": ("install_date", "end_of_service_date"),
+        "monthly_account_metrics": ("month",),
+        "events": ("event_date",),
+    }
+    for table_name, columns in date_columns.items():
+        for column in columns:
+            dates = pd.to_datetime(tables[table_name][column], errors="coerce")
+            if not dates.dt.is_month_end.all():
+                raise ValueError(f"{table_name}.{column} must contain valid month-end dates.")
     hardware = e.loc[e.array_id.notna()]
     if not hardware.array_id.isin(a.array_id).all():
         raise ValueError("Array foreign-key violation.")
