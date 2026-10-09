@@ -30,6 +30,13 @@ def data_fingerprint() -> str:
     return digest.hexdigest()
 
 
+def code_fingerprint() -> str:
+    """Identify the source code used to train and score a model."""
+    return hashlib.sha256(
+        b"".join(p.read_bytes() for p in sorted((ROOT / "src").glob("*.py")))
+    ).hexdigest()
+
+
 def render_results(metrics: dict, results: dict) -> str:
     """Generate a Markdown result table from measurements, never hand-entered metrics."""
     summary = metrics["test"]
@@ -106,9 +113,7 @@ def main() -> None:
             result[name].to_csv(OUTPUTS / f"{split}_{name}.csv", index=False)
         logging.info("%s: %s", split, result["summary"])
     fingerprint = data_fingerprint()
-    source_hash = hashlib.sha256(
-        b"".join(p.read_bytes() for p in sorted((ROOT / "src").glob("*.py")))
-    ).hexdigest()
+    source_hash = code_fingerprint()
     version = (
         "cox-v1-"
         + hashlib.sha256(
@@ -121,6 +126,7 @@ def main() -> None:
         "config": config,
         "version": version,
         "data_fingerprint": fingerprint,
+        "code_sha256": source_hash,
         "calibrated_through": config["validation_end"],
     }
     joblib.dump(bundle, MODELS / "survival_bundle.joblib")

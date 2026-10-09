@@ -7,7 +7,7 @@ from src.calibration import HazardCalibrator, horizon_brier
 from src.competing_risks import array_outcomes, classify_event, cumulative_incidence
 from src.config import load_config
 from src.features import make_features, make_labels
-from src.score import SCORE_COLUMNS, score_accounts, validate_scores
+from src.score import SCORE_COLUMNS, score_accounts, validate_bundle_fingerprints, validate_scores
 from src.survival import SurvivalModel
 
 
@@ -52,6 +52,17 @@ def test_brier_refuses_early_censoring():
     labeled = pd.DataFrame({"duration": [3, 12], "event_observed": [0, 1]})
     with pytest.raises(ValueError, match="IPCW"):
         horizon_brier(labeled, np.array([0.1, 0.2]), 12)
+
+
+def test_scoring_rejects_stale_model_fingerprints():
+    bundle = {"data_fingerprint": "data-v1", "code_sha256": "code-v1"}
+    validate_bundle_fingerprints(bundle, "data-v1", "code-v1")
+    with pytest.raises(ValueError, match="Source data changed"):
+        validate_bundle_fingerprints(bundle, "data-v2", "code-v1")
+    with pytest.raises(ValueError, match="Pipeline code changed"):
+        validate_bundle_fingerprints(bundle, "data-v1", "code-v2")
+    with pytest.raises(ValueError, match="Pipeline code changed"):
+        validate_bundle_fingerprints({"data_fingerprint": "data-v1"}, "data-v1", "code-v1")
 
 
 def test_calibration_monotonicity_and_complete_followup():

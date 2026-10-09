@@ -66,8 +66,8 @@ Scoring replaces the current dashboard and warehouse snapshot; run `make score`
 again to restore the latest observed month.
 
 The dashboard gives setup instructions if artifacts are absent. Retraining changes
-the model version; rerun scoring before opening the dashboard. Source fingerprints
-prevent scoring a regenerated dataset with an older model. Only load the trusted
+the model version; rerun scoring before opening the dashboard. Data and code
+fingerprints prevent scoring with an older, incompatible model. Only load the trusted
 local `models/survival_bundle.joblib` artifact; pickle formats are executable.
 The dashboard also checks the score version, account count, and scoring date against
 its manifest before displaying a portfolio snapshot.

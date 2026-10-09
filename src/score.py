@@ -17,7 +17,7 @@ from src.config import MODELS, OUTPUTS, load_tables, setup
 from src.database import get_warehouse
 from src.explainability import explain_accounts
 from src.features import make_features
-from src.train import data_fingerprint
+from src.train import code_fingerprint, data_fingerprint
 
 SCORE_COLUMNS = [
     "customer_id",
@@ -59,6 +59,14 @@ def validate_scores(scores: pd.DataFrame, horizon: int = 24) -> None:
         0, horizon
     ).all():
         raise ValueError("Invalid financial outputs.")
+
+
+def validate_bundle_fingerprints(bundle: dict, data_hash: str, code_hash: str) -> None:
+    """Refuse to score with a model trained on different data or pipeline code."""
+    if bundle.get("data_fingerprint") != data_hash:
+        raise ValueError("Source data changed since training. Retrain before scoring.")
+    if bundle.get("code_sha256") != code_hash:
+        raise ValueError("Pipeline code changed since training. Retrain before scoring.")
 
 
 def score_accounts(
@@ -115,8 +123,7 @@ def main() -> None:
     if not path.exists():
         raise FileNotFoundError("Model missing. Run: python -m src.train")
     bundle = joblib.load(path)  # Trusted local artifact only; never load untrusted pickles.
-    if data_fingerprint() != bundle["data_fingerprint"]:
-        raise ValueError("Source data changed since training. Retrain before scoring.")
+    validate_bundle_fingerprints(bundle, data_fingerprint(), code_fingerprint())
     tables = load_tables()
     date = pd.Timestamp(args.date) if args.date else tables["monthly_account_metrics"].month.max()
     features = make_features(tables, date)
