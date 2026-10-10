@@ -50,6 +50,10 @@ def money(value: float) -> str:
     return f"${value:,.0f}"
 
 
+def month_label(value: str) -> str:
+    return pd.Timestamp(value).strftime("%b %Y")
+
+
 def plot(fig: go.Figure, height: int = 350) -> None:
     fig.update_layout(
         template="plotly_white",
@@ -113,6 +117,7 @@ if not all(path.exists() for path in required):
     st.stop()
 
 data = load_artifacts(tuple(path.stat().st_mtime_ns for path in required))
+run_config = data["metrics"]["config"]
 all_accounts = data["dashboard_accounts"]
 manifest = data["manifest"]
 if (
@@ -154,7 +159,10 @@ subtitles = {
     "Portfolio Overview": "A forward view of customer retention, recurring contribution, and portfolio exposure.",
     "Risk Explorer": "Explore risk across the installed base and compare the timing of potential churn.",
     "Customer Detail": "Understand one account’s outlook and the model-supported drivers behind its risk.",
-    "Model Validation": "A frozen temporal backtest: predictions at December 2024, observed outcomes through December 2025.",
+    "Model Validation": (
+        f"A frozen temporal backtest: predictions at {month_label(run_config['test_date'])}, "
+        f"observed outcomes through {month_label(run_config['test_end'])}."
+    ),
 }
 st.markdown(f'<div class="subtitle">{subtitles[page]}</div>', unsafe_allow_html=True)
 if accounts.empty and page != "Model Validation":
@@ -445,8 +453,15 @@ else:
     cols[1].metric("Calibrated Brier · 12m", f"{brier12['cox_calibrated']:.4f}")
     cols[2].metric("Baseline Brier · 12m", f"{brier12['baseline']:.4f}")
     cols[3].metric("Observed test churn", f"{metrics['test']['observed_churn_rate']:.1%}")
+    train_months = "/".join(month_label(date) for date in run_config["train_landmarks"])
     st.info(
-        "Train: assigned Dec 2021/2022 landmarks, outcomes through Dec 2023. Calibrate: Dec 2023 → Dec 2024. Test: Dec 2024 → Dec 2025. No test outcomes tune the model or calibrator."
+        f"Train: assigned {train_months} landmarks, outcomes through "
+        f"{month_label(run_config['train_observation_end'])}. "
+        f"Calibrate: {month_label(run_config['validation_date'])} → "
+        f"{month_label(run_config['validation_end'])}. "
+        f"Test: {month_label(run_config['test_date'])} → "
+        f"{month_label(run_config['test_end'])}. "
+        "No test outcomes tune the model or calibrator."
     )
     left, right = st.columns(2)
     with left:
