@@ -263,32 +263,33 @@ if page == "Portfolio Overview":
     )
 
 elif page == "Risk Explorer":
+    risk_distribution = px.histogram(
+        accounts,
+        x="churn_risk_12m",
+        color="company_size",
+        nbins=30,
+        barmode="stack",
+        title="Distribution of 12-month churn risk",
+        labels={"churn_risk_12m": "Churn probability", "company_size": "Segment"},
+    )
+    risk_concentration = px.scatter(
+        accounts,
+        x="churn_risk_12m",
+        y="ARR",
+        color="company_size",
+        hover_name="customer_id",
+        opacity=0.6,
+        title="Risk and revenue concentration",
+        labels={"churn_risk_12m": "12-month churn probability", "ARR": "Current ARR · USD"},
+    )
+    for fig in (risk_distribution, risk_concentration):
+        fig.add_vline(x=threshold, line_dash="dash", line_color="#E76F51")
+    st.caption(f"Dashed line: selected {threshold:.0%} high-risk threshold.")
     left, right = st.columns(2)
     with left:
-        plot(
-            px.histogram(
-                accounts,
-                x="churn_risk_12m",
-                color="company_size",
-                nbins=30,
-                barmode="stack",
-                title="Distribution of 12-month churn risk",
-                labels={"churn_risk_12m": "Churn probability", "company_size": "Segment"},
-            )
-        )
+        plot(risk_distribution)
     with right:
-        plot(
-            px.scatter(
-                accounts,
-                x="churn_risk_12m",
-                y="ARR",
-                color="company_size",
-                hover_name="customer_id",
-                opacity=0.6,
-                title="Risk and revenue concentration",
-                labels={"churn_risk_12m": "12-month churn probability", "ARR": "Current ARR · USD"},
-            )
-        )
+        plot(risk_concentration)
     left, right = st.columns(2)
     with left:
         curves = data["survival_curves"].merge(

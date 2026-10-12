@@ -324,8 +324,9 @@ provides the survival prediction API.
 - **Portfolio Overview:** active accounts, ARR, 24-month CLV, ARR exposure proxy,
   adjustable high-risk threshold, segment comparison, prioritized accounts with their
   risk-weighted ARR, and CSV export.
-- **Risk Explorer:** risk distribution, revenue concentration, segment survival curves,
-  and separately labeled asset competing-risk curves.
+- **Risk Explorer:** risk distribution and revenue concentration with the selected
+  high-risk threshold marked, segment survival curves, and separately labeled asset
+  competing-risk curves.
 - **Customer Detail:** account context, 3/6/12/24-month risk, survival curve, CLV,
   exact upward/downward model contributions, feature inspection, and survival-curve CSV export.
 - **Model Validation:** fixed test cohort, baseline/raw/calibrated financial errors,
