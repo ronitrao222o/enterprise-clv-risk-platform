@@ -284,7 +284,12 @@ elif page == "Risk Explorer":
     )
     for fig in (risk_distribution, risk_concentration):
         fig.add_vline(x=threshold, line_dash="dash", line_color="#E76F51")
-    st.caption(f"Dashed line: selected {threshold:.0%} high-risk threshold.")
+    high_risk_count = int((accounts.churn_risk_12m >= threshold).sum())
+    st.caption(
+        f"Dashed line: selected {threshold:.0%} high-risk threshold. "
+        f"{high_risk_count:,} of {len(accounts):,} filtered accounts "
+        f"({high_risk_count / len(accounts):.1%}) are at or above it."
+    )
     left, right = st.columns(2)
     with left:
         plot(risk_distribution)
