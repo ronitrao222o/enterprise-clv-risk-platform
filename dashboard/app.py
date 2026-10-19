@@ -258,8 +258,18 @@ if page == "Portfolio Overview":
             "predicted_clv": st.column_config.NumberColumn("24m CLV", format="$%,.0f"),
         },
     )
-    st.download_button(
+    high_risk = accounts.loc[accounts.churn_risk_12m >= threshold].sort_values(
+        "revenue_at_risk", ascending=False
+    )
+    download_cols = st.columns(2)
+    download_cols[0].download_button(
         "Download filtered portfolio", accounts.to_csv(index=False), "portfolio.csv", "text/csv"
+    )
+    download_cols[1].download_button(
+        f"Download high-risk accounts ({len(high_risk):,})",
+        high_risk.to_csv(index=False),
+        "high_risk_accounts.csv",
+        "text/csv",
     )
 
 elif page == "Risk Explorer":
