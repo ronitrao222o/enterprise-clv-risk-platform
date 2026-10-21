@@ -233,7 +233,10 @@ if page == "Portfolio Overview":
     st.caption(
         "Ranked by risk-weighted ARR. Use Customer Detail to inspect the survival curve and contribution drivers."
     )
-    top = accounts.sort_values("revenue_at_risk", ascending=False).head(15)
+    ranked_accounts = accounts.sort_values(
+        ["revenue_at_risk", "customer_id"], ascending=[False, True]
+    )
+    top = ranked_accounts.head(15)
     st.dataframe(
         top[
             [
@@ -258,17 +261,19 @@ if page == "Portfolio Overview":
             "predicted_clv": st.column_config.NumberColumn("24m CLV", format="$%,.0f"),
         },
     )
-    high_risk = accounts.loc[accounts.churn_risk_12m >= threshold].sort_values(
-        "revenue_at_risk", ascending=False
-    )
+    high_risk = ranked_accounts.loc[ranked_accounts.churn_risk_12m >= threshold]
+    scoring_date = manifest["scoring_date"]
     download_cols = st.columns(2)
     download_cols[0].download_button(
-        "Download filtered portfolio", accounts.to_csv(index=False), "portfolio.csv", "text/csv"
+        "Download filtered portfolio",
+        ranked_accounts.to_csv(index=False),
+        f"portfolio_{scoring_date}.csv",
+        "text/csv",
     )
     download_cols[1].download_button(
         f"Download high-risk accounts ({len(high_risk):,})",
         high_risk.to_csv(index=False),
-        "high_risk_accounts.csv",
+        f"high_risk_accounts_{scoring_date}.csv",
         "text/csv",
     )
 
