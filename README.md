@@ -335,9 +335,9 @@ provides the survival prediction API.
   coefficient table, and downloadable results.
 
 Customer segment, product, and region filters apply to portfolio/account exploration.
-They do not modify locked validation results or the all-history asset CIF; those
-exceptions are stated in the interface. Streamlit `AppTest` exercises all four pages
-after the pipeline has created its artifacts.
+The controls are disabled on Model Validation because its results use the locked test
+cohort. Filters do not modify the all-history asset CIF, as stated in the interface.
+Streamlit `AppTest` exercises all four pages after the pipeline has created its artifacts.
 
 ## Warehouse and Snowflake
 

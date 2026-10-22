@@ -137,16 +137,28 @@ page = st.sidebar.radio(
     ["Portfolio Overview", "Risk Explorer", "Customer Detail", "Model Validation"],
     label_visibility="collapsed",
 )
+accounts = all_accounts.copy()
+filters_disabled = page == "Model Validation"
 st.sidebar.divider()
 st.sidebar.markdown("**Portfolio filters**")
-segment = st.sidebar.multiselect("Customer segment", sorted(all_accounts.company_size.unique()))
-product = st.sidebar.multiselect("Product family", sorted(all_accounts.product_family.unique()))
-region = st.sidebar.multiselect("Region", sorted(all_accounts.region.unique()))
-threshold = st.sidebar.slider("High-risk threshold · 12m", 0.0, 1.0, 0.20, 0.05, format="%.2f")
-accounts = all_accounts.copy()
-for col, values in [("company_size", segment), ("product_family", product), ("region", region)]:
-    if values:
-        accounts = accounts[accounts[col].isin(values)]
+segment = st.sidebar.multiselect(
+    "Customer segment", sorted(all_accounts.company_size.unique()), disabled=filters_disabled
+)
+product = st.sidebar.multiselect(
+    "Product family", sorted(all_accounts.product_family.unique()), disabled=filters_disabled
+)
+region = st.sidebar.multiselect(
+    "Region", sorted(all_accounts.region.unique()), disabled=filters_disabled
+)
+threshold = st.sidebar.slider(
+    "High-risk threshold · 12m", 0.0, 1.0, 0.20, 0.05, format="%.2f", disabled=filters_disabled
+)
+if filters_disabled:
+    st.sidebar.caption("Filters apply to portfolio views only.")
+else:
+    for col, values in [("company_size", segment), ("product_family", product), ("region", region)]:
+        if values:
+            accounts = accounts[accounts[col].isin(values)]
 st.sidebar.divider()
 st.sidebar.caption(
     f"AS OF {data['manifest']['scoring_date']}  •  USD\n\nSynthetic data · {data['manifest']['backend'].upper()}\n\nModel: {data['manifest']['model_version']}"
@@ -465,7 +477,7 @@ elif page == "Customer Detail":
 
 else:
     st.caption(
-        "Validation results use the entire locked test cohort. Portfolio filters and risk threshold do not change these measurements."
+        "Validation results use the entire locked test cohort, independent of portfolio selections."
     )
     metrics, brier = data["metrics"], data["test_brier"]
     brier12 = brier[brier.horizon_months == 12].set_index("model").brier_score
