@@ -275,6 +275,7 @@ if page == "Portfolio Overview":
     )
     high_risk = ranked_accounts.loc[ranked_accounts.churn_risk_12m >= threshold]
     scoring_date = manifest["scoring_date"]
+    threshold_pct = round(threshold * 100)
     download_cols = st.columns(2)
     download_cols[0].download_button(
         "Download filtered portfolio",
@@ -283,9 +284,9 @@ if page == "Portfolio Overview":
         "text/csv",
     )
     download_cols[1].download_button(
-        f"Download high-risk accounts ({len(high_risk):,})",
+        f"Download accounts at or above {threshold_pct}% risk ({len(high_risk):,})",
         high_risk.to_csv(index=False),
-        f"high_risk_accounts_{scoring_date}.csv",
+        f"high_risk_accounts_{threshold_pct}pct_{scoring_date}.csv",
         "text/csv",
     )
 
